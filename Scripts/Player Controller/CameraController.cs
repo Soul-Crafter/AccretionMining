@@ -7,9 +7,14 @@ namespace Player
     public class CameraController : MonoBehaviour
     {
         // Globals //
-        Rigidbody rb;
         IPlayer player;
-        moveConsts mConsts;
+
+        inputData _input;
+        inputData Input
+        {
+            get => _input;
+            set { _input = value; }
+        }
 
         [Header("Omnipotent Controller Options")]
         [SerializeField] float hSpeed;
@@ -23,26 +28,35 @@ namespace Player
         void Start()
         {
             // Define globals //
-            rb = gameObject.GetComponent<Rigidbody>();
-            player = new OmnipotentController();
-
-            mConsts = new moveConsts
-            {
-                hSpeed = hSpeed,
-                lookSpeed = lookSpeed,
-                sprintSpeed = sprintSpeed,
-                player = gameObject,
-                vSpeed = vSpeed,
-                scrollSpeed = scrollSpeed,
-                dragSpeed = dragSpeed
-            };
             
+            player = new OmnipotentController(
+                new moveConsts
+                {
+                    hSpeed = hSpeed,
+                    lookSpeed = lookSpeed,
+                    sprintSpeed = sprintSpeed,
+                    player = gameObject,
+                    vSpeed = vSpeed,
+                    scrollSpeed = scrollSpeed,
+                    dragSpeed = dragSpeed,
+                    rb = gameObject.GetComponent<Rigidbody>()
+                }
+            );
+            
+            
+
         }
 
         // Update is called once per frame
         void Update()
         {
-            player.move(rb, player.calculateMove(player.getInput(), mConsts), mConsts);
+            _input = player.getInput();
+            player.move(player.updateCalculateMove(_input));
+        }
+
+        void FixedUpdate()
+        {
+            player.move(player.fixedCalculateMove(_input));
         }
 
     }

@@ -8,6 +8,8 @@ namespace Player
     {
         public Vector3 moveVector;
         public Vector3 rotVector;
+        public Vector3 mouseAxes;
+        public float scrollAxis;
         public bool sprinting;
     }
 
@@ -31,6 +33,7 @@ namespace Player
         public float scrollSpeed;
         public float dragSpeed;
         public GameObject player;
+        public Rigidbody rb;
     }
 
     public enum PlayerType 
@@ -42,9 +45,11 @@ namespace Player
 
     public interface IPlayer
     {
+        moveConsts mConsts { get; }
         PlayerType playerType { get; }
         inputData getInput();
-        void move(Rigidbody rb, moveData move, moveConsts mConsts);
-        moveData calculateMove(inputData input, moveConsts mConsts);
+        void move(moveData move);
+        moveData fixedCalculateMove(inputData input);
+        moveData updateCalculateMove(inputData input);
     }
 }
